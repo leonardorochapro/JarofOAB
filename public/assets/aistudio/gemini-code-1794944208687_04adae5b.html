@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OAB Quest — Guia Tático Passo a Passo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Paleta em Modo Claro limpo com identidade visual da OAB */
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --card-hover: #f8fafc;
+      --sub-card: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --oab-red: #b91c1c;
+      --oab-red-light: #ef4444;
+      --oab-red-bg: #fef2f2;
+      --oab-red-border: #fecaca;
+      --navy: #1e3a8a;
+      --navy-bg: #eff6ff;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --warn: #d97706;
+      --warn-bg: #fffbeb;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px 16px 88px;
+      max-width: 960px;
+      margin: 0 auto;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    /* Cabeçalho */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h1 {
+      font-size: 1.48rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .oab-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--oab-red);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* Painel Superior: Jarro Ilustrado + Fila Contínua */
+    .top-dashboard {
+      display: grid;
+      grid-template-columns: 205px 1fr;
+      gap: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 24px;
+      align-items: center;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    @media (max-width: 680px) {
+      .top-dashboard {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        padding: 20px 14px;
+      }
+      .battery-buttons, .timer-actions {
+        justify-content: center;
+      }
+    }
+
+    /* Jarro da Aprovação SVG Dinâmico */
+    .jar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+
+    .jar-svg-box {
+      width: 175px;
+      height: 195px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .jar-svg-box svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.08));
+    }
+
+    /* Animação contínua das ondas do líquido vermelho */
+    .wave-back {
+      animation: waveSlideBack 4.5s linear infinite;
+    }
+
+    .wave-front {
+      animation: waveSlideFront 3s linear infinite;
+    }
+
+    @keyframes waveSlideFront {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-120px); }
+    }
+
+    @keyframes waveSlideBack {
+      0% { transform: translateX(-120px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Bolhas subindo no líquido */
+    .bubble {
+      animation: riseBubble 3.2s ease-in infinite;
+      opacity: 0;
+    }
+    .bubble:nth-child(2) { animation-delay: 1.1s; animation-duration: 2.8s; }
+    .bubble:nth-child(3) { animation-delay: 2.1s; animation-duration: 3.6s; }
+
+    @keyframes riseBubble {
+      0% { transform: translateY(0) scale(0.7); opacity: 0; }
+      25% { opacity: 0.65; }
+      85% { opacity: 0.4; }
+      100% { transform: translateY(-75px) scale(1.15); opacity: 0; }
+    }
+
+    .jar-stats-pill {
+      background: var(--oab-red-bg);
+      border: 1px solid var(--oab-red-border);
+      color: var(--oab-red);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Controles de Missão Guiada */
+    .mission-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--oab-red-bg);
+      color: var(--oab-red);
+      border: 1px solid var(--oab-red-border);
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-navy {
+      background: var(--navy-bg);
+      color: var(--navy);
+      border-color: #bfdbfe;
+    }
+
+    .battery-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      min-height: 42px;
+    }
+
+    button:hover {
+      border-color: var(--oab-red);
+      background: var(--oab-red-bg);
+      color: var(--oab-red);
+    }
+
+    button.active {
+      background: var(--oab-red);
+      color: #ffffff;
+      border-color: var(--oab-red);
+      box-shadow: 0 2px 8px rgba(185, 28, 28, 0.25);
+    }
+
+    button.primary {
+      background: var(--oab-red);
+      color: #ffffff;
+      border-color: var(--oab-red);
+    }
+
+    button.primary:hover {
+      background: #991b1b;
+      border-color: #991b1b;
+      color: #ffffff;
+    }
+
+    .timer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--sub-card);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .timer-display {
+      font-size: 1.65rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--oab-red);
+    }
+
+    .timer-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Acordeão de Matérias e Roteiros Táticos */
+    .subject-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+    }
+
+    .subject-card.current-queue {
+      border: 2px solid var(--oab-red);
+      box-shadow: 0 4px 14px rgba(185, 28, 28, 0.08);
+    }
+
+    .subject-header {
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .subject-header:hover {
+      background: var(--card-hover);
+    }
+
+    .subject-title {
+      font-weight: 700;
+      font-size: 1.03rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .subject-meta {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .topic-list {
+      border-top: 1px solid var(--border);
+      padding: 14px;
+      background: #fafbfc;
+      display: none;
+    }
+
+    .topic-list.open {
+      display: block;
+    }
+
+    .topic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .topic-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .topic-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      gap: 12px;
+    }
+
+    .topic-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--oab-red);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .topic-title-btn {
+      background: none;
+      border: none;
+      color: var(--text);
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0;
+      min-height: auto;
+      cursor: pointer;
+    }
+
+    .topic-title-btn:hover {
+      color: var(--oab-red);
+      background: none;
+    }
+
+    .topic-title-btn.done {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .guide-toggle {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      min-height: 36px;
+      background: var(--oab-red-bg);
+      color: var(--oab-red);
+      border: 1px solid var(--oab-red-border);
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .guide-toggle:hover {
+      background: var(--oab-red);
+      color: #ffffff;
+    }
+
+    /* Gaveta Tática de 4 Blocos Guiados */
+    .step-guide {
+      display: none;
+      padding: 16px;
+      background: #ffffff;
+      border-top: 1px dashed var(--border-strong);
+      font-size: 0.92rem;
+      color: #1e293b;
+    }
+
+    .step-guide.open {
+      display: block;
+    }
+
+    .step-row {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-left: 4px solid var(--navy);
+      background: var(--navy-bg);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .step-row.trap {
+      border-left-color: var(--warn);
+      background: var(--warn-bg);
+    }
+
+    .step-row.hack {
+      border-left-color: var(--purple);
+      background: var(--purple-bg);
+    }
+
+    .step-row.action {
+      border-left-color: var(--success);
+      background: var(--success-bg);
+      margin-bottom: 0;
+    }
+
+    .step-label {
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Notificação suave */
+    .toast-banner {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(140%);
+      background: #0f172a;
+      color: #ffffff;
+      border-left: 5px solid var(--oab-red-light);
+      padding: 14px 22px;
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.25);
+      z-index: 100;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.35s ease;
+      max-width: 92vw;
+      text-align: center;
+    }
+
+    .toast-banner.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Modal de Confirmação */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 200;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .reset-btn {
+      margin-top: 24px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: var(--card);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1><span class="oab-dot"></span> OAB Quest • Guia Tático Passo a Passo</h1>
+      <div class="subtitle">Sem calendário rígido. Um micro-bloco por vez. Toque em "Como estudar" para abrir o roteiro completo.</div>
+    </div>
+    <div class="badge badge-navy" id="levelBadge">Nível 1 • 0% do Jarro Cheio</div>
+  </header>
+
+  <section class="top-dashboard">
+    <!-- Jarro da Aprovação Ilustrado em SVG (Estilo Jarra de Vidro com Líquido Vermelho OAB) -->
+    <div class="jar-wrapper">
+      <div class="jar-svg-box">
+        <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" aria-label="Jarro da Aprovação OAB">
+          <defs>
+            <!-- Máscara interna exata do bojo da jarra -->
+            <clipPath id="jarInteriorClip">
+              <path d="M 60 36
+                       C 66 56, 65 72, 52 94
+                       C 36 120, 35 162, 56 184
+                       C 66 193, 124 193, 134 184
+                       C 155 162, 154 120, 138 94
+                       C 125 72, 124 56, 130 36 Z" />
+            </clipPath>
+
+            <!-- Gradiente do líquido vermelho OAB -->
+            <linearGradient id="oabRedLiquid" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ef4444" />
+              <stop offset="45%" stop-color="#dc2626" />
+              <stop offset="100%" stop-color="#991b1b" />
+            </linearGradient>
+
+            <!-- Gradiente da onda traseira (mais escura para profundidade) -->
+            <linearGradient id="oabRedBack" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#b91c1c" />
+              <stop offset="100%" stop-color="#7f1d1d" />
+            </linearGradient>
+
+            <!-- Reflexo sutil do vidro azulado claro -->
+            <linearGradient id="glassTint" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.65" />
+              <stop offset="30%" stop-color="#ffffff" stop-opacity="0.25" />
+              <stop offset="75%" stop-color="#bae6fd" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0.6" />
+            </linearGradient>
+          </defs>
+
+          <!-- Sombra da base da jarra -->
+          <ellipse cx="95" cy="197" rx="44" ry="7" fill="#cbd5e1" />
+          <ellipse cx="95" cy="195" rx="39" ry="5" fill="#94a3b8" />
+
+          <!-- Alça lateral direita (estilo jarra ilustrada) -->
+          <path d="M 134 46
+                   C 144 46, 146 54, 156 54
+                   C 178 54, 188 82, 184 114
+                   C 180 138, 168 144, 167 162
+                   C 166 171, 158 172, 155 164
+                   C 152 152, 154 134, 147 125"
+                fill="none" stroke="#1e293b" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M 134 46
+                   C 144 46, 146 54, 156 54
+                   C 178 54, 188 82, 184 114
+                   C 180 138, 168 144, 167 162
+                   C 166 171, 158 172, 155 164
+                   C 152 152, 154 134, 147 125"
+                fill="none" stroke="#e0f2fe" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M 142 56 C 166 56, 177 78, 175 110"
+                fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.85" />
+
+          <!-- Fundo translúcido do corpo da jarra -->
+          <path d="M 55 30
+                   C 64 52, 63 70, 49 93
+                   C 31 121, 31 165, 54 188
+                   C 65 197, 125 197, 136 188
+                   C 159 165, 159 121, 141 93
+                   C 127 70, 126 52, 135 30 Z"
+                fill="url(#glassTint)" />
+
+          <!-- Conteúdo Líquido Vermelho OAB com Ondas Animadas -->
+          <g clip-path="url(#jarInteriorClip)">
+            <!-- Grupo que sobe suavemente conforme a porcentagem concluída -->
+            <g id="liquidLevelGroup" style="transform: translateY(160px); transition: transform 0.85s cubic-bezier(0.34, 1.45, 0.64, 1);">
+              <!-- Onda Traseira -->
+              <path class="wave-back"
+                    d="M 0 6 Q 30 -3, 60 6 T 120 6 T 180 6 T 240 6 T 300 6 L 300 185 L 0 185 Z"
+                    fill="url(#oabRedBack)" opacity="0.85" />
+              <!-- Onda Frontal -->
+              <path class="wave-front"
+                    d="M 0 8 Q 30 17, 60 8 T 120 8 T 180 8 T 240 8 T 300 8 L 300 185 L 0 185 Z"
+                    fill="url(#oabRedLiquid)" />
+              <!-- Brilho na crista da superfície do líquido -->
+              <path class="wave-front"
+                    d="M 0 8 Q 30 17, 60 8 T 120 8 T 180 8 T 240 8 T 300 8"
+                    fill="none" stroke="#fca5a5" stroke-width="2.2" opacity="0.8" />
+
+              <!-- Bolhas internas -->
+              <circle class="bubble" cx="72" cy="85" r="3" fill="#fecaca" />
+              <circle class="bubble" cx="102" cy="95" r="2.2" fill="#fecaca" />
+              <circle class="bubble" cx="118" cy="80" r="2.8" fill="#fecaca" />
+            </g>
+          </g>
+
+          <!-- Contorno externo da jarra (traço firme estilo ilustração) -->
+          <path d="M 55 30
+                   C 64 52, 63 70, 49 93
+                   C 31 121, 31 165, 54 188
+                   C 65 197, 125 197, 136 188
+                   C 159 165, 159 121, 141 93
+                   C 127 70, 126 52, 135 30"
+                fill="none" stroke="#1e293b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+
+          <!-- Bico vertedor superior e boca da jarra -->
+          <path d="M 50 24
+                   C 46 26, 48 31, 55 32
+                   C 76 37, 114 37, 135 32
+                   C 140 31, 141 26, 136 25
+                   C 114 28, 78 21, 56 22
+                   C 53 22, 51 23, 50 24 Z"
+                fill="#e0f2fe" stroke="#1e293b" stroke-width="2.8" stroke-linejoin="round" />
+          <path d="M 58 27 C 80 31, 112 31, 131 28"
+                fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" opacity="0.7" />
+
+          <!-- Reflexos brancos verticais no vidro (dão volume 3D) -->
+          <path d="M 54 102 C 42 126, 43 158, 60 179"
+                fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.75" />
+          <path d="M 134 104 C 144 126, 143 155, 129 175"
+                fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.55" />
+          <!-- Gotículas decorativas no vidro (igual à imagem) -->
+          <ellipse cx="75" cy="52" rx="2.2" ry="3.2" fill="#ffffff" stroke="#1e293b" stroke-width="1.5" />
+          <ellipse cx="52" cy="166" rx="2.2" ry="3.2" fill="#ffffff" stroke="#1e293b" stroke-width="1.5" />
+
+          <!-- Placa central legível com a porcentagem -->
+          <g transform="translate(95, 134)">
+            <rect x="-34" y="-21" width="68" height="42" rx="11" fill="#ffffff" fill-opacity="0.92" stroke="#cbd5e1" stroke-width="1.5" />
+            <text id="jarPercentSvg" x="0" y="2" text-anchor="middle" font-size="18" font-weight="800" fill="#0f172a">0%</text>
+            <text x="0" y="14" text-anchor="middle" font-size="8.5" font-weight="700" fill="#b91c1c" letter-spacing="0.04em">OAB</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="jar-stats-pill">
+        <span id="jarCount">0 / 26 tópicos</span>
+      </div>
+      <div class="subtitle" style="font-size: 0.78rem; text-align: center; font-weight: 600;">Jarro da Aprovação</div>
+    </div>
+
+    <!-- Painel de Ação Guiada (Fila Contínua) -->
+    <div class="mission-panel">
+      <div>
+        <span class="badge">PRÓXIMO PASSO DA FILA</span>
+        <h2 id="nextQueueTitle" style="margin-top: 6px; font-size: 1.24rem; color: var(--text);">1. Ética Profissional (8 questões na prova)</h2>
+        <p id="missionDesc" class="subtitle" style="margin-top: 4px;">Bateria Baixa: Abra 1 tópico da matéria da fila, leia o truque de resolução e faça 3 questões da FGV.</p>
+      </div>
+
+      <div class="battery-buttons">
+        <button class="active" onclick="setEnergy('low', this)">🪫 Baixa (15m)</button>
+        <button onclick="setEnergy('med', this)">🔋 Média (25m)</button>
+        <button onclick="setEnergy('high', this)">⚡ Alta (45m)</button>
+      </div>
+
+      <div class="timer-row">
+        <div class="timer-display" id="timerDisplay">15:00</div>
+        <div class="timer-actions">
+          <button class="primary" onclick="toggleTimer()" id="timerBtn">Iniciar Bloco</button>
+          <button onclick="resetTimer()">Zerar</button>
+          <button onclick="advanceQueue()">Próxima Matéria ➔</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lista das 6 Matérias do Núcleo Duro -->
+  <main id="subjectsContainer"></main>
+
+  <button class="reset-btn" onclick="openResetModal()">Zerar todo o jarro e reiniciar</button>
+
+  <!-- Banner de Notificação -->
+  <div class="toast-banner" id="toastBanner"></div>
+
+  <!-- Modal de Confirmação -->
+  <div class="modal-backdrop" id="resetModal">
+    <div class="modal-box">
+      <h3 style="margin-bottom: 8px; font-size: 1.12rem; color: var(--text);">Esvaziar o Jarro da Aprovação?</h3>
+      <p class="subtitle">Isso vai desmarcar todos os 26 tópicos concluídos e voltar a fila para o início.</p>
+      <div class="modal-actions">
+        <button onclick="closeResetModal()">Cancelar</button>
+        <button class="primary" onclick="confirmResetAll()">Sim, reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Estrutura tática dos 26 tópicos campeões de incidência da FGV
+    const syllabus = [
+      {
+        id: 'etica',
+        name: '1. Ética Profissional (8 questões na prova)',
+        topics: [
+          {
+            id: 'et1',
+            title: 'Direitos e Prerrogativas do Advogado',
+            read: 'Estatuto da OAB (Lei 8.906/94), Arts. 6º, 7º, 7º-A e 7º-B.',
+            trap: 'A FGV afirma que o juiz pode decretar quebra da inviolabilidade do escritório de forma genérica ou que o advogado preso em flagrante por crime inafiançável vai direto para cela comum.',
+            hack: 'Regra do "Escudo Absoluto": Em 95% das questões de Ética, a alternativa correta é a que PROTEGE mais o advogado. Nunca existe hierarquia entre juiz, promotor e advogado. Busca no escritório exige: indícios de autoria do PRÓPRIO advogado + mandado específico + representante da OAB presente.',
+            action: 'Leia os Arts. 7º ao 7º-B grifando as exceções e resolva 5 questões recentes da FGV.'
+          },
+          {
+            id: 'et2',
+            title: 'Incompatibilidades e Impedimentos',
+            read: 'Estatuto da OAB (Lei 8.906/94), Arts. 27, 28, 29 e 30.',
+            trap: 'Misturar cargos que geram proibição total (incompatibilidade) com cargos que apenas proíbem advogar contra a Fazenda Pública que paga o salário (impedimento).',
+            hack: 'Teste da "Caneta de Poder": Se o cargo tem poder de mando, polícia, julgamento ou chefia (Delegado, Juiz, Prefeito, Militar da ativa, Gerente de Banco) = INCOMPATÍVEL (zero advocacia). Se é servidor comum (professor de universidade pública, técnico) = IMPEDIDO (pode advogar, só não contra quem paga seu salário).',
+            action: 'Aplique esse teste em 5 questões da FGV sobre incompatibilidades e impedimentos.'
+          },
+          {
+            id: 'et3',
+            title: 'Honorários Advocatícios',
+            read: 'Estatuto da OAB, Arts. 22 a 26 + Código de Ética (CED), Arts. 48 a 54.',
+            trap: 'Dizer que o advogado perde os honorários sucumbenciais se o cliente fizer acordo direto com a parte contrária, ou errar o prazo de prescrição para cobrar.',
+            hack: 'Macete do "3 e 5": Pagamento sem contrato escrito segue a regra dos terços (1/3 no início, 1/3 na sentença de 1º grau, 1/3 no final). Todo prazo de prescrição envolvendo honorários (cobrança ou prestação de contas) é de 5 ANOS.',
+            action: 'Leia os Arts. 22 a 25-A do Estatuto e resolva 4 questões da FGV.'
+          },
+          {
+            id: 'et4',
+            title: 'Infrações, Sanções e Processo Disciplinar',
+            read: 'Estatuto da OAB, Arts. 34 a 43.',
+            trap: 'Trocar Censura por Suspensão ou Exclusão na hora de aplicar a sanção para uma infração descrita no enunciado.',
+            hack: 'Filtro do Dinheiro e Reincidência: Envolveu DINHEIRO do cliente ou reter processo para prejudicar alguém = SUSPENSÃO (30 dias a 12 meses, prorrogável até pagar/devolver). Tem "3 suspensões aplicadas", "crime infamante" ou "falsa prova para inscrição" = EXCLUSÃO. Todo o resto leve = CENSURA.',
+            action: 'Leia os Arts. 34, 36, 37 e 38 e resolva 5 questões focadas na punição.'
+          },
+          {
+            id: 'et5',
+            title: 'Publicidade Profissional e Sociedade de Advogados',
+            read: 'Estatuto da OAB, Arts. 15 a 17 + Código de Ética, Arts. 39 a 47-A.',
+            trap: 'Achar que o advogado não pode usar redes sociais ou impulsionar postagens, ou que pode integrar duas sociedades no mesmo estado.',
+            hack: 'Regra da Sobriedade: Redes sociais e impulsionamento são PERMITIDOS, desde que informativos e sem divulgar valores, consulta grátis ou promessa de causa ganha. Advogado NÃO pode integrar duas sociedades na mesma seccional (mas pode abrir sociedade unipessoal com 1 sócio).',
+            action: 'Leia os Arts. 15 a 17 do Estatuto e faça 4 questões recentes da FGV.'
+          }
+        ]
+      },
+      {
+        id: 'const',
+        name: '2. Direito Constitucional (6 questões na prova)',
+        topics: [
+          {
+            id: 'co1',
+            title: 'Direitos Fundamentais e Remédios Constitucionais',
+            read: 'Constituição Federal, Art. 5º (incisos principais) + Art. 12 (Nacionalidade).',
+            trap: 'Colocar Mandado de Segurança onde cabe Habeas Data, ou exigir advogado para Habeas Corpus e Ação Popular.',
+            hack: 'Chave dos Remédios: Liberdade de ir e vir = HC (grátis, sem advogado). Dado PESSOAL seu em banco público = Habeas Data (exige negativa prévia na via administrativa!). Anular ato lesivo ao patrimônio público = Ação Popular (só CIDADÃO com título de eleitor). Direito líquido e certo com prova pronta = MS (120 dias).',
+            action: 'Leia o Art. 5º (incisos LXVIII a LXXIII) e o Art. 12. Resolva 5 questões da FGV.'
+          },
+          {
+            id: 'co2',
+            title: 'Controle de Constitucionalidade (ADI, ADC, ADPF)',
+            read: 'Constituição Federal, Arts. 102, I, "a" e 103 + Lei 9.868/99 (Arts. 1º a 12).',
+            trap: 'Dizer que Lei Municipal pode ser objeto de ADI no STF, ou que Governador de Estado não precisa provar pertinência temática.',
+            hack: 'Regra do "Lei Municipal = Só ADPF": ADI no STF nunca julga lei municipal nem lei anterior à Constituição de 1988 — nesses dois casos, a única saída é ADPF! Legitimados especiais (Governador, Mesa Estadual, Confederação/Entidade de Classe) têm que provar interesse direto (pertinência temática).',
+            action: 'Leia o Art. 103 da CF e resolva 5 questões sobre legitimidade e objeto.'
+          },
+          {
+            id: 'co3',
+            title: 'Repartição de Competências (União, Estados, Municípios)',
+            read: 'Constituição Federal, Arts. 21, 22, 23, 24 e 30.',
+            trap: 'Inventar que Estado ou Município legislaram sobre Direito Civil, Penal, Trabalho, Trânsito ou Energia (privativos da União).',
+            hack: 'Mnemônico "CAPACETE DE PM": Civil, Agrário, Penal, Aeronáutico, Comercial, Eleitoral, Trabalho, Espacial, Desapropriação, Energia, Processual, Marítimo = TUDO da União (Art. 22). Lei estadual sobre isso sem Lei Complementar delegando é INCONSTITUCIONAL.',
+            action: 'Leia os Arts. 22, 24 e 30 da CF e resolva 4 questões da FGV.'
+          },
+          {
+            id: 'co4',
+            title: 'Processo Legislativo (Emendas e Medidas Provisórias)',
+            read: 'Constituição Federal, Arts. 59 a 69.',
+            trap: 'Dizer que o Presidente pode editar Medida Provisória sobre direito penal/processual ou que PEC precisa de sanção presidencial.',
+            hack: 'Dois bloqueios imediatos: 1) PEC NÃO vai para sanção nem veto do Presidente (é promulgada pelas Mesas da Câmara e Senado). 2) Medida Provisória NUNCA pode tratar de Penal, Processo Penal, Processo Civil nem matéria de Lei Complementar (prazo: 60 + 60 dias).',
+            action: 'Leia os Arts. 60 e 62 da CF e resolva 4 questões.'
+          }
+        ]
+      },
+      {
+        id: 'civil',
+        name: '3. Direito Civil (6 questões na prova)',
+        topics: [
+          {
+            id: 'ci1',
+            title: 'Parte Geral: Incapacidade, Prescrição e Defeitos do Negócio',
+            read: 'Código Civil, Arts. 3º, 4º, 138 a 165 e 189 a 206.',
+            trap: 'Confundir ato NULO com ANULÁVEL, ou achar que menor de 16 anos é relativamente incapaz.',
+            hack: 'Régua da Idade e Validade: Abaixo de 16 anos = ÚNICO absolutamente incapaz (ato NULO, não prescreve). De 16 a 18 anos = relativamente incapaz (ato ANULÁVEL, prazo decadencial de 4 anos). Todos os defeitos do negócio (erro, dolo, coação, lesão, estado de perigo, fraude) geram ANULABILIDADE (4 anos).',
+            action: 'Leia os Arts. 3º, 4º, 166 e 171 do CC e resolva 5 questões da FGV.'
+          },
+          {
+            id: 'ci2',
+            title: 'Responsabilidade Civil (Objetiva vs. Subjetiva)',
+            read: 'Código Civil, Arts. 186, 187 e 927 a 943.',
+            trap: 'Exigir prova de culpa de empresa por ato do funcionário, ou dizer que pais podem cobrar de volta do filho menor o que pagaram à vítima.',
+            hack: 'Regra da Cadeia de Pagamento: Pais, tutores, curadores e empregadores respondem OBJETIVAMENTE (sem culpa). Pagou pela vítima? O empregador pode cobrar do empregado (ação regressiva), mas os PAIS NUNCA podem cobrar de volta do filho menor (Art. 934).',
+            action: 'Leia os Arts. 927 a 934 do CC e resolva 4 questões da FGV.'
+          },
+          {
+            id: 'ci3',
+            title: 'Contratos em Espécie (Compra e Venda, Doação, Locação)',
+            read: 'Código Civil, Arts. 481 a 504 e Arts. 538 a 554.',
+            trap: 'Dizer que venda de pai para filho sem autorização dos irmãos é NULA, ou que doação de pai para filho precisa de autorização dos outros filhos.',
+            hack: 'Contraste Venda vs. Doação em Família: VENDER para um filho sem consentimento dos outros = ANULÁVEL (Art. 496). DOAR para um filho sem consentimento dos outros = VÁLIDA (vale como adiantamento de herança - Art. 544).',
+            action: 'Leia os Arts. 496 e 544 do CC e resolva 4 questões da FGV.'
+          },
+          {
+            id: 'ci4',
+            title: 'Direito das Coisas (Posse e Usucapião)',
+            read: 'Código Civil, Arts. 1.196 a 1.224 e Arts. 1.238 a 1.242.',
+            trap: 'Errar o tempo necessário para usucapião ou permitir usucapião de bem público.',
+            hack: 'Escada dos Prazos (15 - 10 - 5 - 2): Extraordinária = 15 anos (10 com moradia/obras). Ordinária (justo título + boa-fé) = 10 anos (5 com moradia). Especial Urbana (até 250m²) ou Rural (até 50ha) = 5 anos. Abandono do lar (até 250m²) = 2 anos. Bem PÚBLICO nunca sofre usucapião.',
+            action: 'Leia os Arts. 1.238 a 1.242 do CC e faça 4 questões sobre prazos.'
+          },
+          {
+            id: 'ci5',
+            title: 'Família e Sucessões (Regime de Bens e Herança)',
+            read: 'Código Civil, Arts. 1.639 a 1.688 e Arts. 1.829 a 1.847.',
+            trap: 'Dar ao cônjuge sobrevivente (na comunhão parcial) metade dos bens comprados no casamento + herança sobre esses mesmos bens.',
+            hack: 'Regra do "Onde tem Meação, não tem Herança": Na Comunhão Parcial, o cônjuge já tem metade do que compraram juntos (meação). Na herança, ele só concorre nos BENS PARTICULARES do falecido. Se não houver bens particulares, os filhos ficam com 100% da herança.',
+            action: 'Leia o Art. 1.829 do CC com atenção e resolva 5 questões da FGV.'
+          }
+        ]
+      },
+      {
+        id: 'proc_civil',
+        name: '4. Processo Civil (6 questões na prova)',
+        topics: [
+          {
+            id: 'pc1',
+            title: 'Tutelas Provisórias (Urgência e Evidência)',
+            read: 'CPC, Arts. 294 a 311.',
+            trap: 'Dizer que Tutela de Evidência exige urgência, ou que a estabilização da tutela antecipada faz coisa julgada.',
+            hack: 'Diferença no Nome: Tutela de URGÊNCIA = exige probabilidade do direito + perigo de dano. Tutela de EVIDÊNCIA = NÃO precisa de urgência (basta prova documental/tese repetitiva). Tutela antecipada estabilizada pode ser revista em até 2 ANOS.',
+            action: 'Leia os Arts. 300 a 311 do CPC e resolva 5 questões da FGV.'
+          },
+          {
+            id: 'pc2',
+            title: 'Procedimento Comum: Petição Inicial, Audiência e Contestação',
+            read: 'CPC, Arts. 319 a 342.',
+            trap: 'Achar que basta apenas uma das partes não querer audiência de conciliação para ela ser cancelada.',
+            hack: 'Regra do "Veto Duplo": Para cancelar a audiência de conciliação/mediação, AMBOS têm que dizer que não querem (autor na inicial e réu até 10 dias antes da audiência). Se só um não quiser, a audiência acontece.',
+            action: 'Leia os Arts. 334 e 335 do CPC e resolva 4 questões.'
+          },
+          {
+            id: 'pc3',
+            title: 'Recursos (Apelação, Agravo de Instrumento e Embargos)',
+            read: 'CPC, Arts. 994 a 1.026.',
+            trap: 'Mandar interpor Apelação contra decisão interlocutória ou errar o prazo de Embargos de Declaração.',
+            hack: 'Bússola Recursal do CPC: Encerrou o processo (Sentença) = Apelação (15 dias úteis). Decisão no meio do processo (tutela, mérito, gratuidade) = Agravo de Instrumento (15 dias úteis). Decisão omissa/contraditória = Embargos de Declaração (ÚNICO com prazo de 5 dias úteis).',
+            action: 'Leia o Art. 1.015 do CPC e resolva 5 questões.'
+          },
+          {
+            id: 'pc4',
+            title: 'Cumprimento de Sentença e Execução',
+            read: 'CPC, Arts. 513 a 538.',
+            trap: 'Dizer que o devedor precisa depositar o valor (garantir o juízo) para apresentar Impugnação ao Cumprimento de Sentença.',
+            hack: 'Regra da Defesa Livre: No CPC atual, o executado NÃO precisa garantir o juízo para apresentar Impugnação ou Embargos à Execução. A garantia só é exigida se ele quiser pedir EFEITO SUSPENSIVO.',
+            action: 'Leia os Arts. 523 a 525 do CPC e faça 4 questões.'
+          }
+        ]
+      },
+      {
+        id: 'penal',
+        name: '5. Direito Penal (6 questões na prova)',
+        topics: [
+          {
+            id: 'pe1',
+            title: 'Teoria do Crime (Erro de Tipo, Erro de Proibição e Excludentes)',
+            read: 'Código Penal, Arts. 13 a 25.',
+            trap: 'Trocar as consequências do Erro de Tipo com as do Erro de Proibição.',
+            hack: 'Macete da "Realidade vs. Lei": Errou sobre a REALIDADE fática (pegou objeto alheio achando ser seu) = Erro de Tipo (exclui sempre o DOLO). Sabia o que fazia, mas achou que a LEI permitia = Erro de Proibição (exclui a CULPABILIDADE se inevitável).',
+            action: 'Leia os Arts. 20 a 25 do CP e resolva 5 questões da FGV.'
+          },
+          {
+            id: 'pe2',
+            title: 'Aplicação da Pena, Concurso de Crimes e Prescrição',
+            read: 'Código Penal, Arts. 59 a 76 e Arts. 107 a 119.',
+            trap: 'Permitir que o juiz reduza a pena abaixo do mínimo legal na 2ª fase (por confissão ou menoridade).',
+            hack: 'Trava das 3 Fases (Súmula 231 STJ): Na 1ª fase (judiciais) e na 2ª fase (agravantes/atenuantes), a pena NUNCA sai do mínimo e máximo legais. Só na 3ª fase (aumento/diminuição, como tentativa) a pena pode furar o piso ou teto.',
+            action: 'Leia os Arts. 68 a 71 do CP e resolva 4 questões.'
+          },
+          {
+            id: 'pe3',
+            title: 'Crimes contra o Patrimônio (Furto, Roubo, Extorsão, Estelionato)',
+            read: 'Código Penal, Arts. 155 a 171.',
+            trap: 'Confundir Estelionato com Furto mediante fraude, ou Roubo com Extorsão.',
+            hack: 'Teste da "Entrega Voluntária": Vítima entregou o bem enganada por mentira = ESTELIONATO. Criminoso usou fraude para distrair e ele mesmo pegou = FURTO MEDIANTE FRAUDE. Na violência: ladrão pegou sozinho = ROUBO; vítima teve que agir (digitar senha/Pix) = EXTORSÃO.',
+            action: 'Leia os Arts. 155, 157, 158 e 171 do CP e resolva 5 questões.'
+          },
+          {
+            id: 'pe4',
+            title: 'Crimes contra a Administração Pública',
+            read: 'Código Penal, Arts. 312 a 333.',
+            trap: 'Confundir Concussão com Corrupção Passiva, ou achar que particular que cede à exigência comete crime.',
+            hack: 'Verbo-Chave: Funcionário EXIGIU vantagem = CONCUSSÃO (Art. 316). Funcionário SOLICITOU ou RECEBEU = CORRUPÇÃO PASSIVA (Art. 317). Particular OFERECEU ou PROMETEU = CORRUPÇÃO ATIVA (Art. 333 — particular que só paga o que foi exigido não comete crime!).',
+            action: 'Leia os Arts. 312, 316, 317 e 333 do CP e faça 4 questões.'
+          }
+        ]
+      },
+      {
+        id: 'proc_penal',
+        name: '6. Processo Penal (6 questões na prova)',
+        topics: [
+          {
+            id: 'pp1',
+            title: 'Inquérito Policial e Ação Penal',
+            read: 'CPP, Arts. 4º a 23 e Arts. 24 a 62.',
+            trap: 'Dizer que o Delegado pode arquivar o inquérito, ou que o MP pode desistir da ação penal pública.',
+            hack: 'Regra da "Indisponibilidade": Nem o Delegado pode arquivar inquérito (Art. 17), nem o MP pode desistir da ação penal iniciada (Art. 42). Já na ação penal PRIVADA, o querelante pode perdoar ou desistir antes do trânsito em julgado.',
+            action: 'Leia os Arts. 17, 38 e 42 do CPP e resolva 4 questões.'
+          },
+          {
+            id: 'pp2',
+            title: 'Prisões (Flagrante, Preventiva, Temporária) e Audiência de Custódia',
+            read: 'CPP, Arts. 301 a 320 + Lei 7.960/89 (Prisão Temporária).',
+            trap: 'Permitir que o juiz decrete prisão preventiva de ofício ou em crime culposo.',
+            hack: 'Bloqueio do Juiz Passivo: No Processo Penal atual, o juiz NUNCA decreta prisão preventiva de ofício (precisa de pedido do MP, querelante, assistente ou delegado). Só cabe em crimes DOLOSOS com pena máxima superior a 4 anos (salvo reincidência ou violência doméstica).',
+            action: 'Leia os Arts. 311 a 313 do CPP e resolva 5 questões.'
+          },
+          {
+            id: 'pp3',
+            title: 'Provas e Procedimento do Tribunal do Júri',
+            read: 'CPP, Arts. 155 a 158-F e Arts. 406 a 421.',
+            trap: 'Trocar o recurso cabível contra Pronúncia e Impronúncia no Tribunal do Júri.',
+            hack: 'Macete do "Continua vs. Acaba": Na 1ª fase do Júri, se o juiz mandou a Júri (Pronúncia) ou mandou para outro juiz (Desclassificação), o processo CONTINUA = cabe RESE (5 dias). Se encerrou o processo ali (Impronúncia ou Absolvição Sumária), ACABOU = cabe APELAÇÃO (5 dias).',
+            action: 'Leia os Arts. 413 a 416 do CPP e resolva 4 questões.'
+          },
+          {
+            id: 'pp4',
+            title: 'Recursos Criminais (RESE, Apelação e Embargos)',
+            read: 'CPP, Arts. 581 a 600.',
+            trap: 'Usar os prazos do Processo Civil (15 dias) no Processo Penal.',
+            hack: 'Tabela de Prazos Criminais (5 - 2): No Processo Penal não existe prazo de 15 dias! Quase tudo se interpõe em 5 DIAS (Apelação: 5 + 8 razões; RESE: 5 + 2 razões). Exceção: Embargos de Declaração = 2 DIAS (e 5 dias no JECRIM).',
+            action: 'Leia o Art. 581 do CPP e resolva 5 questões sobre prazos e recursos.'
+          }
+        ]
+      }
+    ];
+
+    // Mantém a mesma chave de armazenamento para preservar seu progresso anterior
+    let state = JSON.parse(localStorage.getItem('oabQuestGuidedV4')) || {
+      completed: {},
+      queueIndex: 0
+    };
+
+    let currentEnergy = 'low';
+    let timerSeconds = 15 * 60;
+    let timerInterval = null;
+
+    const energyConfig = {
+      low: { mins: 15, desc: 'Bateria Baixa: Abra 1 tópico da matéria da fila, leia o truque de resolução e faça 3 questões da FGV.' },
+      med: { mins: 25, desc: 'Bateria Média: Leia os artigos, estude a pegadinha + truque e faça 5 questões.' },
+      high: { mins: 45, desc: 'Bateria Alta: Complete o roteiro inteiro de 1 tópico (Lei Seca + Truque + 8 questões).' }
+    };
+
+    function showToast(msg) {
+      const banner = document.getElementById('toastBanner');
+      banner.textContent = msg;
+      banner.classList.add('show');
+      setTimeout(() => banner.classList.remove('show'), 4500);
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('oabQuestGuidedV4', JSON.stringify(state));
+      } catch (e) {}
+      render();
+    }
+
+    function setEnergy(level, btn) {
+      currentEnergy = level;
+      document.querySelectorAll('.battery-buttons button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('missionDesc').textContent = energyConfig[level].desc;
+      resetTimer();
+    }
+
+    function updateTimerDisplay() {
+      const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+      const s = String(timerSeconds % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timerBtn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = 'Retomar';
+      } else {
+        btn.textContent = 'Pausar';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.textContent = 'Concluído!';
+            showToast('Bloco finalizado! Faça 15 minutos de descanso sensorial sem telas.');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = energyConfig[currentEnergy].mins * 60;
+      document.getElementById('timerBtn').textContent = 'Iniciar Bloco';
+      updateTimerDisplay();
+    }
+
+    function advanceQueue() {
+      state.queueIndex = (state.queueIndex + 1) % syllabus.length;
+      resetTimer();
+      saveState();
+      showToast(`Fila avançada para: ${syllabus[state.queueIndex].name}`);
+    }
+
+    function toggleTopic(topicId) {
+      if (state.completed[topicId]) {
+        delete state.completed[topicId];
+      } else {
+        state.completed[topicId] = true;
+        showToast('Tópico concluído! O Jarro da Aprovação subiu.');
+      }
+      saveState();
+    }
+
+    function toggleAccordion(id) {
+      document.getElementById('list-' + id).classList.toggle('open');
+    }
+
+    function toggleGuide(topicId) {
+      document.getElementById('guide-' + topicId).classList.toggle('open');
+    }
+
+    function openResetModal() {
+      document.getElementById('resetModal').classList.add('open');
+    }
+
+    function closeResetModal() {
+      document.getElementById('resetModal').classList.remove('open');
+    }
+
+    function confirmResetAll() {
+      state = { completed: {}, queueIndex: 0 };
+      closeResetModal();
+      saveState();
+      showToast('Jarro esvaziado e fila reiniciada.');
+    }
+
+    function render() {
+      let totalTopics = 0;
+      let doneTopics = 0;
+
+      const container = document.getElementById('subjectsContainer');
+      const openSubjects = {};
+      const openGuides = {};
+
+      syllabus.forEach(s => {
+        const el = document.getElementById('list-' + s.id);
+        openSubjects[s.id] = el ? el.classList.contains('open') : (s.id === syllabus[state.queueIndex].id);
+        s.topics.forEach(t => {
+          const g = document.getElementById('guide-' + t.id);
+          if (g && g.classList.contains('open')) openGuides[t.id] = true;
+        });
+      });
+
+      container.innerHTML = '';
+
+      syllabus.forEach((subj, idx) => {
+        let subjDone = 0;
+        subj.topics.forEach(t => {
+          totalTopics++;
+          if (state.completed[t.id]) {
+            doneTopics++;
+            subjDone++;
+          }
+        });
+
+        const isCurrentQueue = idx === state.queueIndex;
+        const card = document.createElement('div');
+        card.className = `subject-card ${isCurrentQueue ? 'current-queue' : ''}`;
+
+        card.innerHTML = `
+          <div class="subject-header" onclick="toggleAccordion('${subj.id}')">
+            <div class="subject-title">
+              ${subj.name}
+              ${isCurrentQueue ? '<span class="badge">SUA VEZ NA FILA</span>' : ''}
+            </div>
+            <div class="subject-meta">${subjDone}/${subj.topics.length} concluídos ▾</div>
+          </div>
+          <div class="topic-list ${openSubjects[subj.id] ? 'open' : ''}" id="list-${subj.id}">
+            ${subj.topics.map(t => {
+              const checked = !!state.completed[t.id];
+              return `
+                <div class="topic-card">
+                  <div class="topic-header">
+                    <div class="topic-left">
+                      <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleTopic('${t.id}')" aria-label="Concluir ${t.title}" />
+                      <button class="topic-title-btn ${checked ? 'done' : ''}" onclick="toggleGuide('${t.id}')">
+                        ${t.title}
+                      </button>
+                    </div>
+                    <button class="guide-toggle" onclick="toggleGuide('${t.id}')">Como estudar ▾</button>
+                  </div>
+                  <div class="step-guide ${openGuides[t.id] ? 'open' : ''}" id="guide-${t.id}">
+                    <div class="step-row">
+                      <span class="step-label" style="color: var(--navy);">1. O que ler (Lei Seca exata)</span>
+                      ${t.read}
+                    </div>
+                    <div class="step-row trap">
+                      <span class="step-label" style="color: var(--warn);">2. Onde a FGV tenta te derrubar</span>
+                      ${t.trap}
+                    </div>
+                    <div class="step-row hack">
+                      <span class="step-label" style="color: var(--purple);">3. Como derrotar a FGV (Truque de resolução)</span>
+                      ${t.hack}
+                    </div>
+                    <div class="step-row action">
+                      <span class="step-label" style="color: var(--success);">4. Passo prático agora</span>
+                      ${t.action}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      const pct = Math.round((doneTopics / totalTopics) * 100);
+      const level = Math.floor(doneTopics / 5) + 1;
+
+      // Calcula a posição vertical do líquido dentro do SVG da jarra
+      // 0% -> translateY(182px) (vazio na base); 100% -> translateY(34px) (cheio até o gargalo)
+      const emptyY = 182;
+      const fullY = 34;
+      const currentY = emptyY - ((pct / 100) * (emptyY - fullY));
+      document.getElementById('liquidLevelGroup').style.transform = `translateY(${currentY}px)`;
+
+      document.getElementById('jarPercentSvg').textContent = `${pct}%`;
+      document.getElementById('jarCount').textContent = `${doneTopics} / ${totalTopics} tópicos`;
+      document.getElementById('levelBadge').textContent = `Nível ${level} • ${pct}% do Jarro Cheio`;
+      document.getElementById('nextQueueTitle').textContent = syllabus[state.queueIndex].name;
+    }
+
+    render();
+    updateTimerDisplay();
+  </script>
+</body>
+</html>

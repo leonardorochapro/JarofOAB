@@ -1,0 +1,6 @@
+{
+  "name": "OAB Quest",
+  "description": "Guia tático minimalista passo a passo para aprovação na OAB com design Liquid Glass.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
